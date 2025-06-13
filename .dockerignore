@@ -1,0 +1,32 @@
+# Ignora node_modules (será instalado na imagem)
+node_modules
+npm-debug.log
+yarn-error.log
+
+# Diretórios de build
+.next
+dist
+
+# Ignora ambiente local
+.env.local
+.env.development
+.env.test
+.env.*
+
+# Ignora cache e editor
+*.log
+*.lock
+.vscode
+.idea
+.DS_Store
+
+# Testes e documentação
+coverage
+__tests__
+*.spec.ts
+*.test.ts
+docs
+
+# Prisma: mantemos apenas `prisma/schema.prisma` e `prisma/migrations/`
+prisma/dev.db
+prisma/dev.sqlite

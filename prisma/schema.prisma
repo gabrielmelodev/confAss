@@ -1,0 +1,81 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model Inscricao {
+  id                      String    @id @default(cuid())
+  nomeCompleto            String
+  numeroInscricao         Int       @unique
+  nomeSocial              String?
+  dataNascimento          DateTime
+  idade                   Int
+  cpf                     String    @unique
+  telefone                String?
+  email                   String
+  enderecoRua             String
+  enderecoBairro          String
+  enderecoCidadeUF        String
+  cep                     String
+
+  genero                  String
+  racaCor                 String
+  pessoaComDeficiencia    Boolean
+  tipoDeficiencia         String?
+  recursoAcessibilidade   Boolean
+  qualAcessibilidade      String?
+
+  orientacaoSexual        String
+  certificadoEnviado Boolean @default(false)
+  tipoParticipante        String
+  representaOrganizacao   Boolean
+  organizacaoNome         String?
+  jaParticipouConferencias Boolean
+  liberadaEm               DateTime?
+  eixoTematico             String
+  tentativaBloqueada      Boolean @default(false)
+  autorizacaoImagem       Boolean
+  status                  String   @default("inscrito") // 'inscrito' ou 'fila_espera'
+  presente                Boolean   @default(false)  // Novo: presença confirmada?
+  dataPresenca            DateTime?                 // Novo: data da confirmação de presença
+  presencaConfirmada      Boolean  @default(false) 
+  criadoEm                DateTime  @default(now())
+  aListaEspera            Boolean  @default(false)
+  organizacaoId           String?
+  organizacao             Organizacao? @relation(fields: [organizacaoId], references: [id])
+}
+
+
+model Organizacao {
+  id          String      @id @default(cuid())
+  nome        String
+  inscricoes  Inscricao[]
+}
+
+model AdminConfig {
+  id                String   @id @default("admin")
+  pin               String
+  pinHash           String?
+  limiteInscricoes  Int      @default(230)
+  createdAt         DateTime @default(now())
+}
+
+model FilaEspera {
+  id            String   @id @default(cuid())
+  nomeCompleto  String
+  cpf           String   @unique
+  email         String
+  dataTentativa DateTime @default(now())
+}
