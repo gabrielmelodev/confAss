@@ -7,29 +7,38 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm install
 
-# Copia tudo e compila o projeto (inclui Prisma)
+# Copia o restante do código
 COPY . .
 
-# Gera Prisma Client e compila TypeScript
+ENV PRISMA_CLI_QUERY_ENGINE_TYPE=binary
+ENV PRISMA_GENERATE_BINARY_TARGETS=linux-musl
+
+# Gera o Prisma Client já com as binaries certas
 RUN npx prisma generate
+
+# Compila o Next.js
 RUN npm run build
+
 
 # Etapa 2 – Imagem final para produção
 FROM node:20-alpine AS runner
 
 WORKDIR /app
 
-# Reduz tamanho: apenas os arquivos essenciais
+# Copia apenas o necessário para produção
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/prisma ./prisma
 
-# Prisma Client precisa dos schemas para rodar
+
+COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
+ENV NEXT_DISABLE_ESLINT=true
 
 EXPOSE 9000
 
-CMD ["npm", "start"]
+CMD ["next", "start"]

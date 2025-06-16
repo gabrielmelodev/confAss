@@ -6,6 +6,7 @@ import { ReactNode, useState, useEffect } from 'react';
 import { LayoutDashboard, Menu, Users, X, LogOut, Mail } from 'lucide-react';
 import { AdminGuard } from '@/app/components/AdminGuard';
 import { motion } from 'framer-motion'
+import Image from 'next/image';
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
   const [menuAberto, setMenuAberto] = useState(false);
@@ -82,7 +83,9 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, ease: 'easeOut' }}
             >
-              <img
+              <Image
+                width={40}
+                height={40} // ajuste conforme necessári
                 src="/logo.png" // ajuste conforme necessário
                 alt="COMAS"
                 className="h-10 w-auto object-contain select-none"

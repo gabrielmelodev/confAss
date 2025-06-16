@@ -1,14 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '../../../../../lib/prisma';
 
-export async function GET(
-  request: NextRequest,
-  context: { params: { id: string } }
-) {
-  const { id } = context.params;
+interface Params {
+  params: { id: string };
+}
 
+export async function GET(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+  // Exemplo: pathname = '/api/inscricoes/1234'
+  const segments = pathname.split('/');
+  const id = segments[segments.length - 1]; // pega o último segmento da URL
+
+  // Agora você pode usar o id para buscar no banco
   const inscricao = await prisma.inscricao.findUnique({
-    where: { id }
+    where: { id },
   });
 
   if (!inscricao) {
@@ -26,7 +31,7 @@ export async function GET(
       rua: inscricao.enderecoRua,
       bairro: inscricao.enderecoBairro,
       cidadeUF: inscricao.enderecoCidadeUF,
-      cep: inscricao.cep
+      cep: inscricao.cep,
     },
     qrCodeData: `comprovante:${inscricao.id}`,
   });

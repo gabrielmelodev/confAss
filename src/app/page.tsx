@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from 'react'
 import { ArrowLeft, Printer, Download, Shield, CheckCircle, CalendarDays, MapPin, Clock, Check, Calendar } from 'lucide-react';
 import * as Yup from 'yup'
 import { InputValido } from './components/InputValidade' // seu componente customizado
-import Link from 'next/link';
+
 import { QRCodeSVG } from 'qrcode.react';
 import React from 'react';
 import Image from 'next/image';
@@ -764,9 +764,11 @@ export default function FormularioInscricaoCompleto() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6 }}
                   >
-                    <img
+                    <Image
                       src="/branco.png"
                       alt="COMAS"
+                      width={100}
+                      height={50}
                       className="h-15 w-auto object-contain select-none"
                     />
                   </motion.div>
@@ -786,8 +788,9 @@ export default function FormularioInscricaoCompleto() {
                     animate={{ opacity: 1 }}
                     transition={{ duration: 1, delay: 0.5 }}
                   >
-                    Inscreva-se na 10ª Conferência Municipal e veja-a florescer em um ambiente acolhedor, seguro e
-                    estimulante. Sua voz é fundamental para o fortalecimento do SUAS.
+                    A 10ª Conferência Municipal de Assistência Social de Formosa/GO é um espaço democrático e participativo que reúne gestores, trabalhadores, entidades da sociedade civil e, principalmente, usuários do SUAS. Seu objetivo é fortalecer a política de Assistência Social por meio da escuta, análise, avaliação e formulação de propostas, promovendo um ambiente acolhedor, seguro e estimulante para o diálogo e a construção coletiva de soluções.
+
+
                   </motion.p>
 
                   {/* Cards de informações */}
@@ -820,13 +823,7 @@ export default function FormularioInscricaoCompleto() {
             </div>
           </div>
         </div>
-      </div >
-
-
-
-
-
-
+      </div>
     </>
   )
 }

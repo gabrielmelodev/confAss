@@ -8,6 +8,14 @@
     "start": "next start",
     "lint": "next lint"
   },
+  "eslintConfig": {
+    "extends": "next",
+    "ignorePatterns": [
+      "src/generated/**",
+      "src/**/*.ts",
+      "src/**/*.tsx"
+    ]
+  },
   "dependencies": {
     "@prisma/client": "^6.9.0",
     "@radix-ui/react-dialog": "^1.1.14",
