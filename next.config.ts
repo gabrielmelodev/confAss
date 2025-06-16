@@ -2,13 +2,12 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   experimental: {
-    middlewarePrefetch: "strict" // se quiser controlar manualmente o pré-carregamento do middleware
+    middlewarePrefetch: "strict",
   },
   eslint: {
-    ignoreDuringBuilds: true, // <- desativa ESLint na build
+    ignoreDuringBuilds: true,
   },
-  devIndicators: false
+  devIndicators: false,
 };
-
 
 export default nextConfig;

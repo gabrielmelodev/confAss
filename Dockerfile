@@ -1,39 +1,39 @@
-# Etapa 1 – Instala dependências e compila
-FROM node:20-alpine AS builder
+# Etapa 1 – Build
+FROM node:20-slim AS builder
 
 WORKDIR /app
 
-# Copia arquivos de configuração
+# Instala dependências necessárias para Prisma e Next.js
+RUN apt-get update && apt-get install -y openssl git libssl-dev
+
+# Copia apenas o necessário inicialmente (para cache de npm install)
 COPY package.json package-lock.json ./
 RUN npm install
 
-# Copia o restante do código
+# Copia o restante da aplicação
 COPY . .
 
-ENV PRISMA_CLI_QUERY_ENGINE_TYPE=binary
-ENV PRISMA_GENERATE_BINARY_TARGETS=linux-musl
-
-# Gera o Prisma Client já com as binaries certas
+# Gera o Prisma Client (usa os engines corretos para o Debian, sem precisar de binaryTargets especiais)
 RUN npx prisma generate
 
-# Compila o Next.js
+# Build do Next.js
 RUN npm run build
 
 
-# Etapa 2 – Imagem final para produção
-FROM node:20-alpine AS runner
+# Etapa 2 – Runner (Imagem de Produção)
+FROM node:20-slim AS runner
 
 WORKDIR /app
 
-# Copia apenas o necessário para produção
+RUN apt-get update && apt-get install -y openssl libssl-dev
+
+# Copia apenas os arquivos necessários para execução em produção
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/prisma ./prisma
-
-
-COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+COPY .env .env
 
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
@@ -41,4 +41,4 @@ ENV NEXT_DISABLE_ESLINT=true
 
 EXPOSE 9000
 
-CMD ["next", "start"]
+CMD ["npm", "start"]
